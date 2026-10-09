@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171717">
+<title>イッ豚 公式アプリ</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+header{background:#f7d629;color:#111;padding:24px 18px}
+header small{font-weight:bold}
+header h1{font-size:34px;margin:8px 0}
+header p{margin:0;font-weight:bold}
+main{padding:16px;max-width:600px;margin:auto}
+.switch{display:flex;gap:8px;margin-bottom:16px}
+button{border:0;border-radius:12px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer}
+.switch button{flex:1;background:#333;color:white}
+.switch button.active{background:#f7d629;color:#111}
+.card{background:#222;border-radius:16px;padding:18px;margin:14px 0}
+h2{font-size:20px;margin-top:0}
+.points{font-size:36px;color:#f7d629;font-weight:800}
+.action{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.action button{background:#f7d629;color:#111}
+.menuitem{border-bottom:1px solid #444;padding:12px 0}
+.note{color:#bbb;font-size:13px;line-height:1.6}
+footer{display:flex;position:sticky;bottom:0;background:#1d1d1d;padding:10px;gap:6px}
+footer button{flex:1;background:transparent;color:white;font-size:12px;padding:10px 3px}
+</style>
+</head>
+<body>
+<header>
+<small>NOODLE SHOP</small>
+<h1>イッ豚</h1>
+<p>公式アプリ｜イッ豚 × イッチャンラーメン</p>
+</header>
+<main>
+<div class="switch">
+<button class="active" onclick="brand('itton',this)">イッ豚</button>
+<button onclick="brand('icchan',this)">イッチャンラーメン</button>
+</div>
+<section id="home">
+<div class="card">
+<h2>共通会員ポイント</h2>
+<div class="points" id="points">0 pt</div>
+<p class="note">2ブランド共通ポイント（デモ表示）</p>
+<button onclick="show('member')" style="background:#f7d629">会員証を見る</button>
+</div>
+<div class="card">
+<h2 id="brandTitle">イッ豚へようこそ！</h2>
+<p id="brandText">ガツンとうまい一杯を。</p>
+<div class="action">
+<button onclick="show('menu')">🍜 メニュー</button>
+<button onclick="show('coupons')">🎟 クーポン</button>
+<button onclick="show('member')">⭐ 会員証</button>
+<button onclick="show('news')">📢 お知らせ</button>
+</div>
+</div>
+<div class="card">
+<h2>店舗情報</h2>
+<p>営業日・営業時間は公式のお知らせをご確認ください。</p>
+<p class="note">※本番公開前に各店舗の住所・営業時間を登録します。</p>
+</div>
+</section>
+<section id="menu" hidden class="card">
+<h2>メニュー</h2>
+<div id="menuList"></div>
+<p class="note">表示価格は登録済みメニューの参考価格です。</p>
+</section>
+<section id="coupons" hidden class="card">
+<h2>クーポン</h2>
+<p>🎟 公式アプリ限定特典</p>
+<p class="note">現在は準備中です。本番ではスタッフ確認後に利用済みになります。</p>
+</section>
+<section id="member" hidden class="card">
+<h2>共通会員証</h2>
+<div class="points" id="memberPoints">0 pt</div>
+<p>イッ豚・イッチャンラーメン共通</p>
+<p class="note">会員登録・ポイントはまだデモです。実際のポイントは加算されません。</p>
+</section>
+<section id="news" hidden class="card">
+<h2>お知らせ</h2>
+<p>最新のお知らせは準備中です。</p>
+</section>
+</main>
+<footer>
+<button onclick="show('home')">🏠 ホーム</button>
+<button onclick="show('menu')">🍜 メニュー</button>
+<button onclick="show('coupons')">🎟 クーポン</button>
+<button onclick="show('member')">⭐ 会員証</button>
+<button onclick="show('news')">📢 お知らせ</button>
+</footer>
+<script>
+let currentBrand='itton';
+const menus={
+itton:[['イッ豚ラーメン（ミニ）','950円'],['イッ豚ラーメン（小）','1,000円'],['イッ豚ラーメン（大）','1,100円'],['イッ豚汁なし（ミニ）','1,000円'],['イッ豚汁なし（小）','1,100円'],['イッ豚汁なし（大）','1,200円']],
+icchan:[['中華蕎麦','価格確認中'],['チャーシュー麺','価格確認中']]
+};
+function brand(b,el){
+currentBrand=b;
+document.querySelectorAll('.switch button').forEach(x=>x.classList.remove('active'));
+el.classList.add('active');
+document.getElementById('brandTitle').textContent=b==='itton'?'イッ豚へようこそ！':'中華蕎麦 イッチャンラーメンへようこそ！';
+document.getElementById('brandText').textContent=b==='itton'?'ガツンとうまい一杯を。':'毎日でも食べたくなる一杯を。';
+renderMenu();
+}
+function renderMenu(){
+document.getElementById('menuList').innerHTML=menus[currentBrand].map(m=>'<div class="menuitem"><b>'+m[0]+'</b><br>'+m[1]+'</div>').join('');
+}
+function show(id){
+['home','menu','coupons','member','news'].forEach(s=>document.getElementById(s).hidden=s!==id);
+if(id==='member')document.getElementById('memberPoints').textContent='0 pt';
+window.scrollTo(0,0);
+}
+renderMenu();
+</script>
+</body>
+</html>
